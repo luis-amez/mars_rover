@@ -1,13 +1,26 @@
-var ORIENTATIONS = ['N','E','S','O'];
+var ORIENTATIONS = ['N','E','S','W'];
 var GRID = [10,10];
 
 var obstacles = [[2,2],[5,8]];
 
-var myRover = {
+var firstRover = {
+  name: 'Amy',
   position: [0,0],
   direction: 'N',
   status: 1
 };
+
+var secondRover = {
+  name: 'Bob',
+  position: [9,9],
+  direction: 'S',
+  status: 1
+};
+
+function setup() {
+  addObstacle(firstRover.position);
+  addObstacle(secondRover.position);
+}
 
 function goForward(rover) {
   var origin = rover.position.slice();
@@ -87,17 +100,34 @@ function isObstacle(rover) {
   return collision;
 }
 
-function showPosition(rover) {
-  console.log("New Rover Position: [" + rover.position[0] + ", " + rover.position[1] + "]");
+function removeObstacle(position) {
+  var index = obstacles.indexOf(position);
+  if(index > -1) {
+    obstacles.splice(index, 1);
+  }
 }
 
-function moveRover(rover) {
+function addObstacle(position) {
+  obstacles.push(position);
+}
+
+function showPosition(rover) {
+  console.log("New " + rover.name + " Position: [" + rover.position[0] + ", " + rover.position[1] + "]");
+}
+
+function getInstructions() {
   var instructions = prompt("Please, set movement instructions:\n" +
                             " - f: forward\n" +
                             " - b: backward\n" +
                             " - r: turn right\n" +
                             " - l: turn left\n" +
                             "Example: ffrblff");
+  return instructions;
+}
+
+function moveRover(rover) {
+  removeObstacle(rover.position);
+  instructions = getInstructions();
   var instruction = 0;
   while(instruction < instructions.length && rover.status == 1) {
     switch (instructions[instruction]) {
@@ -119,6 +149,8 @@ function moveRover(rover) {
     showPosition(rover);
     instruction++;
   }
+  addObstacle(rover.position);
 }
 
-moveRover(myRover);
+moveRover(firstRover);
+moveRover(secondRover);
