@@ -1,12 +1,16 @@
 var ORIENTATIONS = ['N','E','S','O'];
 var GRID = [10,10];
 
+var obstacles = [[2,2],[5,8]];
+
 var myRover = {
   position: [0,0],
-  direction: 'N'
+  direction: 'N',
+  status: 1
 };
 
 function goForward(rover) {
+  var origin = rover.position.slice();
   switch(rover.direction) {
     case 'N':
       rover.position[0]++;
@@ -22,9 +26,13 @@ function goForward(rover) {
       break;
   }
   checkBoundaries(rover);
+  if(isObstacle(rover)) {
+    rover.position = origin;
+  }
 }
 
 function goBackward(rover) {
+  var origin = rover.position.slice();
   switch(rover.direction) {
     case 'N':
       rover.position[0]--;
@@ -40,6 +48,9 @@ function goBackward(rover) {
       break;
   }
   checkBoundaries(rover);
+  if(isObstacle(rover)) {
+    rover.position = origin;
+  }
 }
 
 function turnRight(rover) {
@@ -64,6 +75,18 @@ function checkBoundaries(rover) {
   }
 }
 
+function isObstacle(rover) {
+  var collision = false;
+  obstacles.forEach(function(obstacle){
+    if(rover.position[0] == obstacle[0] && rover.position[1] == obstacle[1]) {
+      collision = true;
+      rover.status = 0;
+      console.log("Obstacle detected at: [" + rover.position[0] + ", " + rover.position[1] + "]");
+    }
+  });
+  return collision;
+}
+
 function showPosition(rover) {
   console.log("New Rover Position: [" + rover.position[0] + ", " + rover.position[1] + "]");
 }
@@ -75,8 +98,9 @@ function moveRover(rover) {
                             " - r: turn right\n" +
                             " - l: turn left\n" +
                             "Example: ffrblff");
-  for(var i = 0; i < instructions.length; i++) {
-    switch (instructions[i]) {
+  var instruction = 0;
+  while(instruction < instructions.length && rover.status == 1) {
+    switch (instructions[instruction]) {
       case 'f':
         goForward(rover);
         break;
@@ -91,9 +115,9 @@ function moveRover(rover) {
         break;
       default:
         console.log("Invalid instruction.");
-        continue;
     }
     showPosition(rover);
+    instruction++;
   }
 }
 
