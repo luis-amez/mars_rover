@@ -69,7 +69,12 @@ function showPosition(rover) {
 }
 
 function moveRover(rover) {
-  var instructions = prompt("Instructions: ");
+  var instructions = prompt("Please, set movement instructions:\n" +
+                            " - f: forward\n" +
+                            " - b: backward\n" +
+                            " - r: turn right\n" +
+                            " - l: turn left\n" +
+                            "Example: ffrblff");
   for(var i = 0; i < instructions.length; i++) {
     switch (instructions[i]) {
       case 'f':
